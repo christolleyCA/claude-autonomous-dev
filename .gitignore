@@ -1,0 +1,69 @@
+# ============================================================================
+# AUTONOMOUS DEVELOPMENT SYSTEM - GIT IGNORE
+# ============================================================================
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Logs
+*.log
+logs/
+nohup.out
+
+# Temporary files
+/tmp/
+*.tmp
+*.temp
+*.backup
+*~
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+*.secret
+*-token
+*token.txt
+*secret.txt
+
+# Personal feature registry (backup separately)
+.feature-registry.json
+
+# Node modules (if any)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+
+# Python (if any)
+__pycache__/
+*.py[cod]
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Certificates and keys
+*.pem
+*.key
+*.crt
+*.cer
+id_rsa
+id_rsa.pub
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Keep documentation and scripts
+!*.md
+!*.sh
+!*.ts
