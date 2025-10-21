@@ -203,6 +203,49 @@ This may take a moment depending on complexity."
                 response="Error: build-feature.sh not found at ${SCRIPT_DIR}/build-feature.sh"
                 exit_code=1
             fi
+        elif [[ "$command" == "git-commit" ]] || [[ "$command" == "git-commit-and-push" ]]; then
+            echo "🔧 Git commit command detected"
+
+            # Determine if we should push
+            local push_arg="no"
+            if [[ "$command" == "git-commit-and-push" ]]; then
+                push_arg="push"
+                echo "   Mode: Commit AND push to GitHub"
+            else
+                echo "   Mode: Commit only (no push)"
+            fi
+
+            # Execute smart commit
+            if [ -f "${SCRIPT_DIR}/smart-git-commit.sh" ]; then
+                response=$("${SCRIPT_DIR}/smart-git-commit.sh" "$push_arg" 2>&1)
+                exit_code=$?
+            else
+                response="Error: smart-git-commit.sh not found at ${SCRIPT_DIR}/smart-git-commit.sh"
+                exit_code=1
+            fi
+
+        elif [[ "$command" == "git-status" ]]; then
+            echo "📊 Git status command detected"
+            response=$(git status 2>&1)
+            exit_code=$?
+
+        elif [[ "$command" == "git-summary" ]]; then
+            echo "📈 Git summary command detected"
+            response=$(echo "=== Last 5 Commits ===" && git log -5 --pretty=format:"%h - %an, %ar : %s" && echo "" && echo "" && echo "=== Current Branch ===" && git branch && echo "" && echo "=== Uncommitted Changes ===" && git status --short 2>&1)
+            exit_code=$?
+
+        elif [[ "$command" == "restore-context" ]]; then
+            echo "🔍 Restore context command detected"
+
+            # Execute restore context
+            if [ -f "${SCRIPT_DIR}/restore-context.sh" ]; then
+                response=$("${SCRIPT_DIR}/restore-context.sh" 2>&1)
+                exit_code=$?
+            else
+                response="Error: restore-context.sh not found at ${SCRIPT_DIR}/restore-context.sh"
+                exit_code=1
+            fi
+
         else
             # Normal command - execute as shell
             echo "⚡ Executing shell command"

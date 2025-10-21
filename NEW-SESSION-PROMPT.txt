@@ -1,0 +1,84 @@
+# 🤖 New Session Startup Prompt for Claude Code
+
+## Copy and paste this when opening a new Claude Code session:
+
+---
+
+I have an autonomous development system set up with:
+- Remote access via Slack (/cc commands)
+- Autonomous feature building with build-feature.sh
+- Knowledge base system (solutions, analytics, learning)
+- Git automation with smart commits
+- Context restoration capabilities
+- N8n workflows and Supabase integration
+
+Please help me:
+1. Check GETTING-STARTED.md for full context
+2. Run: /cc restore-context (show me what we worked on)
+3. Review recent commits: git log -5 --oneline
+4. Check current status: git status
+
+Then tell me what I was working on and what we should do next.
+
+---
+
+## Alternative: Quick Status Check
+
+If you just need a quick status update, use this shorter version:
+
+---
+
+I have an autonomous development system. Check GETTING-STARTED.md for context.
+Show me: recent commits, current git status, and what I was working on.
+
+---
+
+## For Specific Tasks
+
+If you know what you want to work on, be more specific:
+
+---
+
+I have an autonomous development system (see GETTING-STARTED.md).
+I want to [SPECIFIC TASK HERE].
+First restore context to see where we left off.
+
+---
+
+## Files to Reference
+
+Key documentation files Claude should check:
+- GETTING-STARTED.md - Main guide
+- QUICK-REFERENCE.txt - Command cheat sheet
+- ULTIMATE-AUTONOMOUS-SYSTEM.md - Full system details
+- KNOWLEDGE-BASE-COMPLETE.md - KB system
+- GIT-SETUP-COMPLETE.md - Git integration
+
+## What Claude Knows
+
+Claude Code has NO memory of previous sessions, but it HAS:
+- Access to all your files and scripts
+- All configured MCP servers (Supabase, N8n)
+- Git history and commit logs
+- Knowledge base in Supabase
+
+## What to Expect
+
+After using the prompt above, Claude will:
+1. Read GETTING-STARTED.md to understand your setup
+2. Execute restore-context to show recent work
+3. Check git commits to see what changed
+4. Provide a summary of where you left off
+5. Suggest next steps based on uncommitted changes
+
+## Pro Tips
+
+- Use the full prompt on your first message of the day
+- Be specific about what you want to accomplish
+- Claude can execute /cc commands via your remote access system
+- All your work is backed up in Git (check with git log)
+- Knowledge base persists in Supabase (survives sessions)
+
+---
+
+**Welcome back! Your autonomous development system is ready.** 🚀

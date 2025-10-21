@@ -136,12 +136,20 @@ This runs the FULL autonomous workflow:
 /cc view-stats
 ```
 
-#### Git Operations:
+#### Git Operations (NEW! Automatic Backups):
 ```
-/cc git-status
-/cc git-recent 10
-/cc git-commit "message"
+/cc git-commit                    # Smart commit with auto-generated message
+/cc git-commit-and-push           # Commit AND push to GitHub automatically
+/cc git-status                    # Check uncommitted changes
+/cc git-summary                   # Last 5 commits + current state
+/cc restore-context               # See what you worked on recently
 ```
+
+**💡 Pro Tip:** Before closing your laptop, run:
+```
+/cc git-commit-and-push
+```
+Everything backed up to GitHub in ONE command!
 
 #### Code Analysis:
 ```
@@ -398,3 +406,282 @@ Everything else is automatic. Your autonomous system takes care of the rest.
 ---
 
 **Welcome back! Your autonomous development system is ready to go.** 🚀
+
+---
+
+## 🔄 Git Operations (Automatic!)
+
+### NEW: Smart Git Automation System
+
+Never lose your work! The system now auto-generates commit messages and backs up to GitHub with ONE command.
+
+### Quick Commit (Smart Messages):
+```
+/cc git-commit
+```
+
+**What happens:**
+1. Analyzes all changed files
+2. Detects what you worked on (features, docs, scripts, etc.)
+3. Creates descriptive commit message automatically
+4. Commits locally with attribution to Claude
+
+**Example output:**
+```
+📊 Analyzing changes...
+📝 Changes to commit:
+   M  build-feature.sh
+   M  restore-context.sh
+   A  smart-git-commit.sh
+
+💬 Commit message:
+   Session update: Git automation improvements, 3 files
+
+✅ Committed as abc123f
+```
+
+### Commit AND Push to GitHub:
+```
+/cc git-commit-and-push
+```
+
+**Does everything:**
+1. Creates smart commit message
+2. Commits all changes
+3. Pushes to GitHub
+4. Sends Slack notification with results
+
+**You get notified in Slack:**
+```
+✅ Git Backup Complete
+Commit: `abc123f`
+Message: Session update: Enhanced autonomous capabilities, 8 files
+Pushed to GitHub ✓
+```
+
+### Check Git Status:
+```
+/cc git-status
+```
+Shows uncommitted files and current state.
+
+### See Recent Work:
+```
+/cc git-summary
+```
+Shows:
+- Last 5 commits
+- Current branch
+- Uncommitted changes
+
+### Restore Context After Restart:
+```
+/cc restore-context
+```
+
+Shows EVERYTHING you need to know:
+```
+🔍 RESTORING CONTEXT FROM LAST SESSION
+════════════════════════════════════════
+
+📅 LAST COMMIT:
+   Commit: abc123f
+   Date:   2025-10-21 14:30
+   Message: Session update: Added git automation
+
+📊 RECENT ACTIVITY (Last 10 commits):
+   10/21 14:30 abc123f Session update: Added git automation
+   10/21 12:15 def456g Built feature: nonprofit-intelligence-system
+   10/20 16:45 ghi789h Documentation updates
+   ...
+
+📂 CURRENT STATE:
+   Uncommitted changes: 3 files
+   Files:
+      M  README.md
+      A  new-feature.ts
+      M  tests/new-test.ts
+
+🚀 SERVICES STATUS:
+   ✅ Remote access: Running
+   ⚠️  Watchdog: Not running (optional)
+
+════════════════════════════════════════
+✅ CONTEXT RESTORED - Ready to continue!
+```
+
+---
+
+## 💾 Before Closing Laptop (Recommended Workflow)
+
+### Option 1: Full Backup (Recommended)
+```
+/cc git-commit-and-push
+```
+**One command. Everything saved to GitHub. Sleep easy!**
+
+### Option 2: Local Save Only
+```
+/cc git-commit
+```
+Commits locally. Push later when you have internet.
+
+### Manual Alternative (if remote access isn't running):
+```bash
+./smart-git-commit.sh push
+```
+
+---
+
+## 🔄 When You Return (New Session)
+
+### Step 1: Start Everything
+```bash
+./start-everything.sh
+```
+
+### Step 2: Restore Context
+```
+/cc restore-context
+```
+
+You'll see:
+- What you worked on last
+- Recent commits
+- Uncommitted changes (if any)
+- Service status
+
+### Step 3: Continue Working!
+Claude now knows exactly where you left off.
+
+---
+
+## 📖 Git Command Reference
+
+| Command | What It Does | When To Use |
+|---------|-------------|-------------|
+| `/cc git-commit` | Smart commit with auto message | After work session |
+| `/cc git-commit-and-push` | Commit + push to GitHub | Before closing laptop |
+| `/cc git-status` | Show uncommitted changes | Check what's modified |
+| `/cc git-summary` | Last 5 commits + status | Quick overview |
+| `/cc restore-context` | Full session context | When you return |
+
+---
+
+## 🎯 Recommended Daily Workflow
+
+### Morning (When You Start):
+```bash
+# Terminal
+./start-everything.sh
+
+# Slack (after 30 seconds)
+/cc restore-context
+```
+
+Now you see exactly what you were working on yesterday!
+
+### During Work:
+```
+# Build features
+/cc build-feature my-feature "description"
+
+# Check progress
+/cc git-status
+
+# Commit periodically
+/cc git-commit
+```
+
+### Evening (Before Closing):
+```
+/cc git-commit-and-push
+```
+
+**Done!** Everything backed up. Laptop goes to sleep. Work is safe.
+
+---
+
+## 🆘 Git Recovery Scenarios
+
+### Scenario 1: "I forgot to commit before closing"
+**No problem!** Uncommitted changes persist on your machine.
+
+When you return:
+```
+/cc git-status          # See what wasn't committed
+/cc git-commit-and-push # Back it up now
+```
+
+### Scenario 2: "I need to see what I did yesterday"
+```
+/cc restore-context
+```
+
+Shows all your recent commits and changes.
+
+### Scenario 3: "I want to undo my last commit"
+```bash
+git reset --soft HEAD~1   # Undo commit, keep changes
+git status                # Verify
+```
+
+### Scenario 4: "I pushed by mistake"
+Don't panic! Your work is backed up. You can always revert:
+```bash
+git log              # Find the commit to revert to
+git revert <commit>  # Create a new commit that undoes it
+```
+
+---
+
+## 💡 Smart Commit Message Examples
+
+The system automatically detects what you worked on:
+
+**Example 1: Built a feature**
+```
+Session update: Enhanced build-feature system - 5 files
+```
+
+**Example 2: Updated docs**
+```
+Session update: Documentation updates - 12 files
+```
+
+**Example 3: Added scripts**
+```
+Session update: Added/updated scripts, Git automation improvements - 8 files
+```
+
+**Example 4: Multiple changes**
+```
+Session update: Code changes, Database schema updates, Documentation updates - 23 files
+```
+
+All messages include:
+- Co-authored by Claude
+- Generated with Claude Code attribution
+- File count
+
+---
+
+## 🔐 Security Note
+
+### What Gets Committed:
+✅ Source code
+✅ Configuration files
+✅ Documentation
+✅ Scripts
+
+### What's Ignored (.gitignore):
+❌ Environment variables (.env)
+❌ API keys
+❌ node_modules
+❌ Temporary files (/tmp/*)
+❌ Build artifacts
+❌ Local config
+
+The smart commit analyzer ONLY commits files tracked by Git.
+
+---
