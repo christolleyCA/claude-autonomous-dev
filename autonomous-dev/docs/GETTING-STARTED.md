@@ -346,19 +346,17 @@ Your system has several MCP servers configured that give Claude Code enhanced ca
    - Automation control
    - Status: Connected
 
-3. **Sentry MCP** ⚠️
+3. **Sentry MCP** ✅
    - Error monitoring and tracking
    - Issue analysis and debugging
-   - Status: Configured (needs OAuth authentication)
-   - To authenticate: Use `/mcp` command in Claude Code
+   - Organization: oxfordshire-inc
+   - Status: Connected
 
-### Available for Setup:
-
-4. **GitHub MCP** (Optional)
+4. **GitHub MCP** ✅
    - Repository management
    - PR creation and management
    - Issue tracking
-   - To add: See MCP Setup Guide below
+   - Status: Connected
 
 ### Verify MCP Status:
 ```bash
@@ -367,27 +365,26 @@ claude mcp list
 
 Shows all configured MCPs and their connection status.
 
-### MCP Setup Guide
+### MCP Management
 
-#### To Add GitHub MCP:
-1. Create a GitHub Personal Access Token:
-   - Go to https://github.com/settings/tokens
-   - Generate new token (classic)
-   - Select scopes: `repo`, `workflow`, `admin:org`
+All MCPs are already configured and connected! You don't need to set anything up.
 
-2. Add GitHub MCP:
-   ```bash
-   claude mcp add github -e GITHUB_PERSONAL_ACCESS_TOKEN=your_token_here -- docker run -i --rm -e GITHUB_PERSONAL_ACCESS_TOKEN ghcr.io/github/github-mcp-server
-   ```
+#### To Check MCP Health:
+```bash
+claude mcp list
+```
 
-#### To Authenticate Sentry MCP:
-1. In Claude Code, run: `/mcp`
-2. Follow OAuth flow to connect your Sentry account
-3. You can then ask questions like: "What are the most common errors in the last 24 hours?"
+This shows all configured MCPs and their connection status.
 
-#### To Remove an MCP:
+#### To Remove an MCP (if needed):
 ```bash
 claude mcp remove <server-name>
+```
+
+#### To Add a New MCP (advanced):
+Check the MCP marketplace or documentation for specific MCPs you want to add:
+```bash
+claude mcp add <name> [options] -- <command>
 ```
 
 ### What Can You Do With MCPs?
@@ -402,15 +399,17 @@ claude mcp remove <server-name>
 - "Show me the structure of the grants-scraper workflow"
 - "Update this workflow with new nodes"
 
-**With Sentry MCP (after authentication):**
+**With Sentry MCP:**
 - "What errors occurred in the last 24 hours?"
 - "Show me the most frequent issues"
 - "Get fix recommendations for error XYZ"
+- "List all issues in the oxfordshire-inc organization"
 
-**With GitHub MCP (if configured):**
+**With GitHub MCP:**
 - "Create a PR for my current changes"
 - "List open issues in this repository"
 - "Show me recent commits"
+- "Check CI/CD status for this branch"
 
 ## ⚠️ What You DO Need to Start
 
