@@ -1,0 +1,28 @@
+SUPABASE SQL EDITOR - BATCH APPLICATION INSTRUCTIONS
+=====================================================
+
+For each batch (1 through 22):
+
+1. Click "New query"
+2. Open batch file in TextEdit:
+   - batch_1.sql (10,000 nonprofits)
+   - batch_2.sql (10,000 nonprofits)
+   ... through batch_22.sql (598 nonprofits)
+
+3. Copy ALL contents (⌘+A, ⌘+C)
+4. Paste into SQL editor (⌘+V)
+5. Click "RUN" button
+6. Wait for "Success" message (~30 seconds per batch)
+7. Repeat for next batch
+
+Progress tracker:
+☐ batch_1  ☐ batch_2  ☐ batch_3  ☐ batch_4  ☐ batch_5
+☐ batch_6  ☐ batch_7  ☐ batch_8  ☐ batch_9  ☐ batch_10
+☐ batch_11 ☐ batch_12 ☐ batch_13 ☐ batch_14 ☐ batch_15
+☐ batch_16 ☐ batch_17 ☐ batch_18 ☐ batch_19 ☐ batch_20
+☐ batch_21 ☐ batch_22
+
+Each batch = ~10,000 nonprofits
+Total time = ~20 minutes
+
+Files location: ~/nonprofit_sql_inserts/batch_*.sql

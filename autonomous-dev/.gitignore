@@ -1,0 +1,30 @@
+# System files
+.DS_Store
+.Trash
+.localized
+*.bak
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+/tmp/
+
+# Sensitive data
+.env
+*.key
+*.pem
+
+# Large data files (keep structure, not content)
+data/**/*.csv
+data/**/*.json
+data/**/*.sql
+
+# Build artifacts
+*.pyc
+__pycache__/
+
+# Node modules (if any)
+node_modules/

@@ -1,0 +1,125 @@
+# Slack Bot Token Configuration for N8n
+
+## ⚠️ IMPORTANT: Configure Slack API Credentials
+
+The `claude-responses-to-slack` workflow needs your Slack Bot Token to post messages back to Slack.
+
+---
+
+## 📋 Option 1: Use Existing N8n Slack Credential (Recommended)
+
+If you already have a Slack API credential in N8n:
+
+1. Go to: https://n8n.grantpilot.app/credentials
+2. Find: "Slack API" credential
+3. Verify it has a valid Bot Token (xoxb-...)
+4. The workflow is already configured to use credential ID: "slack-api"
+5. ✅ You're done! Just activate the workflow.
+
+---
+
+## 📋 Option 2: Create New Slack API Credential
+
+If you don't have a Slack credential in N8n yet:
+
+### Step 1: Get Your Slack Bot Token
+
+1. Go to: https://api.slack.com/apps
+2. Select your "Claude Code Bot" app
+3. Go to: **OAuth & Permissions**
+4. Copy the **Bot User OAuth Token** (starts with `xoxb-`)
+
+### Step 2: Add Credential to N8n
+
+1. Go to: https://n8n.grantpilot.app/credentials
+2. Click: **"+ Create New Credential"**
+3. Search for: **"Slack API"**
+4. Enter:
+   - **Credential Name:** `Slack API`
+   - **Access Token:** `xoxb-YOUR-TOKEN-HERE`
+5. Click: **"Create"**
+
+### Step 3: Link to Workflow
+
+The workflow "claude-responses-to-slack" is already configured to use the credential named "Slack API". No changes needed!
+
+---
+
+## 📋 Option 3: Use HTTP Request with Header Auth
+
+If you prefer to use raw HTTP requests:
+
+1. Open workflow: `claude-responses-to-slack`
+2. Find node: **"Post to Slack"**
+3. Change **Authentication** to: "Header Auth"
+4. Add header:
+   - **Name:** `Authorization`
+   - **Value:** `Bearer xoxb-YOUR-TOKEN-HERE`
+
+---
+
+## 🔐 Your Slack Bot Token
+
+Based on your config, your token should look like:
+```
+xoxb-9313372951873-8120234218064-...
+```
+
+**Where to find it:**
+- In your local config.json (if you saved it)
+- Or get it fresh from: https://api.slack.com/apps → Your App → OAuth & Permissions
+
+---
+
+## ✅ Required Slack Permissions
+
+Make sure your Slack Bot has these OAuth scopes:
+
+- ✅ `chat:write` - Post messages to channels
+- ✅ `chat:write.public` - Post to public channels without joining
+- ✅ `channels:history` - View channel messages (for slash commands)
+
+---
+
+## 🧪 Test the Credential
+
+After adding the credential, test it:
+
+1. Open workflow: `claude-responses-to-slack`
+2. Click on: **"Post to Slack"** node
+3. Click: **"Execute Node"**
+4. Check for successful response from Slack API
+
+---
+
+## 🚨 Troubleshooting
+
+### "invalid_auth" error
+- Token is wrong or expired
+- Get fresh token from Slack App settings
+- Reinstall app to workspace if needed
+
+### "channel_not_found" error
+- Bot not invited to channel
+- Use channel ID instead of name
+- Ensure bot has permission to post
+
+### "not_in_channel" error
+- Bot needs to be invited to channel
+- Or use `chat:write.public` scope
+
+---
+
+## 📝 Next Steps
+
+After configuring credentials:
+
+1. ✅ Verify Slack API credential exists
+2. ✅ Activate workflow: `claude-responses-to-slack`
+3. ✅ Activate workflow: `slack-cc-command`
+4. ✅ Start Claude Code polling: `./start-remote-access.sh`
+5. 🎉 Test end-to-end with: `/cc echo Hello!`
+
+---
+
+**Once configured, responses will automatically appear in Slack within ~45 seconds!** 🚀

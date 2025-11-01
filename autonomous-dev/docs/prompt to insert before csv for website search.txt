@@ -1,0 +1,212 @@
+## TASK OVERVIEW
+Process nonprofit organizations that lack both websites AND public-facing classification. Export them, classify them, and prepare them in batches for website discovery.
+
+---
+
+## PART 1: INITIAL EXPORT
+
+**Export nonprofits that meet ALL criteria:**
+- No website listed
+- No public-facing classification (empty or null)
+
+**Export specifications:**
+- **Location:** `/Users/christophertolleymacbook2019/Downloads/CSV Files to Process Oct 28/Rest of NFPs without classification or websites but with prompts/`
+- **Filename:** `Rest of the NFPs without classification and without websites Oct 30.csv`
+- **Format:** Valid CSV with all original columns intact
+- **Include:** These columns from source data (EIN, Name, City, State, Public Facing, Website)
+
+---
+
+## PART 2: BUILD CLASSIFICATION SCRIPT
+
+**Create a Python script that:**
+
+### Input
+- Reads the CSV file created in Part 1
+- Identifies rows where `Public Facing` is empty/null
+
+### Processing Logic
+Classify each organization as public-facing (True/False) based on the name:
+
+**Classify as FALSE (Not Public-Facing) if name contains:**
+- Benefit-related: VEBA, benefit, benefits, plan, master trust, insurance, reinsurance, sick leave, vacation trust, life insurance, disability
+- Retirement-related: retire, retirees, postretirement, post-retirement
+- Union/trade-specific: teamsters, IBEW, operating engineers, laborers, carpenters, sheet metal, plumbers, electrical workers
+- Internal trusts: security fund, trust fund, health & welfare, health and welfare
+- Corporate entities without public programs: Company, LLC, LLP, Corp
+- Apprenticeship or training trusts serving only members
+
+**Classify as TRUE (Public-Facing) if name contains:**
+- Educational: university, school, college
+- Healthcare: hospital, medical center, medical group, clinic, health system
+- Charitable: community foundation, charitable foundation, donor-advised fund, public charity
+- Public service: museum, library, community clinic
+- Public utilities: cooperative, authority serving transit/power/water/public
+
+**Tie-breaker:** If both indicators appear, classify as **True** (Public-Facing)
+
+### Output Requirements
+
+**Export batches of 1,000 rows as .txt files:**
+- **Location:** Same directory as Part 1
+- **Naming:** `NFP classified, without websites, with prompts Batch [X].txt`
+- **Content structure:**
+  ```
+  [PROMPT TEXT - see Part 3]
+  
+  [CSV DATA - 1,000 rows]
+  ```
+
+**Terminal summary after each batch:**
+```
+Summary:
+Batch X of Y processed
+Rows processed: [number]
+```
+
+**Data integrity rules:**
+- ✓ Preserve all original data exactly
+- ✓ Only populate the `Public Facing` column (True/False)
+- ✓ Use proper CSV escaping
+- ✗ Do NOT modify names, EIN, city, state, or other fields
+- ✗ Do NOT add or remove rows
+- ✗ Do NOT use markdown formatting
+
+---
+
+## PART 3: TXT FILE FORMAT
+
+Each .txt file must begin with this exact prompt, followed by CSV data:
+
+```
+**Role**  
+You find and verify official websites for U.S. nonprofit organizations. You output the text as a properly formatted CSV file in a code box that can be easily copied and pasted.
+
+---
+
+## INPUT  
+A CSV dataset with 1,000 rows containing nonprofit information with columns:  
+EIN, Name, City, State, Public Facing, Website
+
+---
+
+## YOUR TASK  
+For rows where **Website is empty AND Public Facing = TRUE**:
+1. Search the web for the organization's official website
+2. Verify the website matches the organization
+3. Add the verified URL to the Website column
+4. Leave blank if no reliable official website exists
+
+For rows where **Public Facing = FALSE**: Skip (no website search needed)
+
+---
+
+## WEBSITE SEARCH & VERIFICATION PROTOCOL
+
+### Search Strategy
+1. Search: `"[Organization Name]" [City] [State]` (optionally include EIN)
+2. Look for the official domain (not directories or intermediaries)
+3. For departments within larger institutions, find the specific program page
+
+### Verification Checklist
+✓ Site loads successfully (not 404)  
+✓ Name and location match the organization  
+✓ Appears to be the official domain (check About, footer, contact)  
+✓ For charities within companies, use specific program URL (e.g., `company.com/foundation`)
+
+### What NOT to Use
+✗ Third-party directories (GuideStar, Charity Navigator)  
+✗ Donation platforms or fundraising intermediaries  
+✗ Social media (unless no official site exists)  
+✗ Unrelated or suspicious domains
+
+### URL Formatting
+- Use HTTPS only
+- Remove tracking parameters (UTM codes, etc.)
+- Use clean, official domain format
+- Facebook Page as last resort only if verified
+- When uncertain, leave blank
+
+---
+
+## OUTPUT REQUIREMENTS
+
+### CSV Format
+- Valid CSV with proper escaping
+- Text with commas wrapped in quotes
+- Quotes escaped as `""`
+- **DO NOT include header row** (EIN,Name,City,State,Public Facing,Website)
+- Include these columns only: EIN, Name, City, State, Public Facing, Website
+- Keep all original data exactly as provided
+
+**Export as text in a properly formatted CSV in a code box for easy copy/paste**
+
+---
+
+## FINAL SUMMARY
+
+After processing all 1,000 rows:
+
+```
+Summary:  
+Rows processed: [number]  
+Websites found: [number]  
+Already had websites: [number]  
+Left blank (no reliable site): [number]  
+Needs Review: [number]  
+```
+
+### Needs Review Section
+List any unclear/questionable websites:
+
+```
+Needs Review:  
+- [Organization Name] — [brief reason]  
+```
+
+---
+
+## EXECUTION RULES
+
+**DO:**
+- Search thoroughly before leaving blank
+- Verify every URL loads and matches
+- Use proper CSV escaping
+- Preserve all original data exactly
+
+**DO NOT:**
+- Invent or guess URLs
+- Use markdown formatting in CSV
+- Modify organization names, addresses, or data
+- Include commentary or filler text
+- Add or remove rows
+
+---
+
+**The 1,000-row CSV data below (columns: EIN, Name, City, State, Public Facing, Website):**"
+
+<end of text of prompt to start off the .txt files>
+
+###################
+
+Once the prompt is added, then follow up by adding the 1,000 rows of processed (ie public-facing categorized) data.
+
+```
+File contents:
+-Prompt
+-Header (EIN,Name,City,State,Public Facing,Website)
+-1,000 processed (catagorized) rows of NFPs
+```
+
+---
+
+## SCRIPT EXECUTION SUMMARY
+
+Print to the Terminal your process. i.e. "Batch X Processed and Saved to Folder"
+
+When the script completes all batches, provide final statistics:
+- Total rows processed
+- Total batches created
+- Classification breakdown (True vs False)
+- Any errors encountered
+
