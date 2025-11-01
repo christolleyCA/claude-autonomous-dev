@@ -21,6 +21,12 @@
 data/**/*.csv
 data/**/*.json
 data/**/*.sql
+data/**/*.LST
+data/**/*.zip
+data/**/*.html
+data/**/*.pdf
+data/**/*.png
+data/**/*.txt
 
 # Build artifacts
 *.pyc
