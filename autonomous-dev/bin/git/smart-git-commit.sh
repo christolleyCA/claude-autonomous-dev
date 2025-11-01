@@ -3,7 +3,12 @@
 
 # Get the Slack function
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-if [ -f "$SCRIPT_DIR/send-to-slack.sh" ]; then
+PROJECT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+
+# Try to source send-to-slack from automation directory
+if [ -f "$PROJECT_DIR/bin/automation/send-to-slack.sh" ]; then
+    source "$PROJECT_DIR/bin/automation/send-to-slack.sh"
+elif [ -f "$SCRIPT_DIR/send-to-slack.sh" ]; then
     source "$SCRIPT_DIR/send-to-slack.sh"
 fi
 
@@ -103,7 +108,16 @@ smart_commit() {
         echo "🌐 Pushing to GitHub..."
         local current_branch=$(git branch --show-current)
 
-        if git push origin "$current_branch" 2>&1; then
+        # Capture push output and exit code
+        local push_output
+        local push_exit_code
+        push_output=$(git push origin "$current_branch" 2>&1)
+        push_exit_code=$?
+
+        # Wait for any background processes to complete
+        wait
+
+        if [ $push_exit_code -eq 0 ]; then
             echo "✅ Pushed successfully!"
 
             # Send to Slack if function exists
@@ -111,16 +125,21 @@ smart_commit() {
                 send_to_slack "✅ *Git Backup Complete*
 Commit: \`$commit_hash\`
 Message: $commit_msg
-Pushed to GitHub ✓"
+Pushed to GitHub ✓" &
+                # Wait for Slack notification to complete
+                wait
             fi
         else
             echo "❌ Push failed"
+            echo "$push_output"
 
             # Send to Slack if function exists
             if type send_to_slack &>/dev/null; then
                 send_to_slack "⚠️ Git committed locally but push failed
 Commit: \`$commit_hash\`
-Check internet connection"
+Check internet connection" &
+                # Wait for Slack notification to complete
+                wait
             fi
         fi
     else
@@ -128,6 +147,9 @@ Check internet connection"
         echo "💡 To push: git push"
         echo "💡 Or run: ./smart-git-commit.sh push"
     fi
+
+    # Ensure all child processes have completed before exiting
+    wait
 }
 
 # If called directly (not sourced), execute
