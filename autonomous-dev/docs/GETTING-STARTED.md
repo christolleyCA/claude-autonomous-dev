@@ -323,9 +323,94 @@ tail -f /tmp/remote-access-startup.log
 ✅ Slack integration (already set up)
 ✅ Sentry monitoring (configured)
 ✅ Git repository (initialized)
-✅ MCP servers (configured in ~/.config/claude-code/)
+✅ **MCP servers (configured - see below for details)**
 ✅ Knowledge base data (in Supabase)
 ✅ All scripts and documentation (in Git)
+
+---
+
+## 🔌 MCP Servers (Model Context Protocol)
+
+Your system has several MCP servers configured that give Claude Code enhanced capabilities:
+
+### Currently Active:
+
+1. **Supabase MCP** ✅
+   - Direct database access
+   - Execute SQL queries
+   - Manage tables and migrations
+   - Status: Connected
+
+2. **N8n MCP** ✅
+   - Workflow management
+   - Automation control
+   - Status: Connected
+
+3. **Sentry MCP** ⚠️
+   - Error monitoring and tracking
+   - Issue analysis and debugging
+   - Status: Configured (needs OAuth authentication)
+   - To authenticate: Use `/mcp` command in Claude Code
+
+### Available for Setup:
+
+4. **GitHub MCP** (Optional)
+   - Repository management
+   - PR creation and management
+   - Issue tracking
+   - To add: See MCP Setup Guide below
+
+### Verify MCP Status:
+```bash
+claude mcp list
+```
+
+Shows all configured MCPs and their connection status.
+
+### MCP Setup Guide
+
+#### To Add GitHub MCP:
+1. Create a GitHub Personal Access Token:
+   - Go to https://github.com/settings/tokens
+   - Generate new token (classic)
+   - Select scopes: `repo`, `workflow`, `admin:org`
+
+2. Add GitHub MCP:
+   ```bash
+   claude mcp add github -e GITHUB_PERSONAL_ACCESS_TOKEN=your_token_here -- docker run -i --rm -e GITHUB_PERSONAL_ACCESS_TOKEN ghcr.io/github/github-mcp-server
+   ```
+
+#### To Authenticate Sentry MCP:
+1. In Claude Code, run: `/mcp`
+2. Follow OAuth flow to connect your Sentry account
+3. You can then ask questions like: "What are the most common errors in the last 24 hours?"
+
+#### To Remove an MCP:
+```bash
+claude mcp remove <server-name>
+```
+
+### What Can You Do With MCPs?
+
+**With Supabase MCP:**
+- "Show me all tables in the database"
+- "Execute this SQL query: SELECT * FROM nonprofits LIMIT 10"
+- "Create a new migration for adding a column"
+
+**With N8n MCP:**
+- "List all workflows"
+- "Show me the structure of the grants-scraper workflow"
+- "Update this workflow with new nodes"
+
+**With Sentry MCP (after authentication):**
+- "What errors occurred in the last 24 hours?"
+- "Show me the most frequent issues"
+- "Get fix recommendations for error XYZ"
+
+**With GitHub MCP (if configured):**
+- "Create a PR for my current changes"
+- "List open issues in this repository"
+- "Show me recent commits"
 
 ## ⚠️ What You DO Need to Start
 

@@ -102,6 +102,31 @@ else
     echo "   ⚠️  Could not determine disk usage"
 fi
 
+# 6. Check MCP servers
+echo "6️⃣ Checking MCP servers..."
+if command -v claude &> /dev/null; then
+    echo "   Running MCP health check..."
+    mcp_status=$(claude mcp list 2>&1)
+
+    # Count connected MCPs
+    connected_count=$(echo "$mcp_status" | grep -c "✓ Connected" || echo "0")
+    needs_auth_count=$(echo "$mcp_status" | grep -c "Needs authentication" || echo "0")
+
+    if [ "$connected_count" -gt 0 ]; then
+        echo "   ✓ $connected_count MCP(s) connected"
+        if [ "$needs_auth_count" -gt 0 ]; then
+            echo "   ⚠️  $needs_auth_count MCP(s) need authentication"
+        fi
+    else
+        echo "   ⚠️  No MCPs connected (this is optional)"
+    fi
+
+    # Show quick summary
+    echo "$mcp_status" | grep -E "(supabase|n8n-mcp|sentry)" | sed 's/^/   /'
+else
+    echo "   ⚠️  Claude CLI not available (MCP check skipped)"
+fi
+
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "✅ SYSTEM READY!"
@@ -110,6 +135,10 @@ echo ""
 echo "📱 Remote Access:"
 echo "   Test with: /cc echo \"Hello from Slack!\""
 echo "   Status: /cc system-status"
+echo ""
+echo "🔌 MCP Servers:"
+echo "   Check status: claude mcp list"
+echo "   View details: cat GETTING-STARTED.md (MCP section)"
 echo ""
 echo "🔨 Build Features:"
 echo "   Use: /cc build-feature <name> \"description\""
@@ -124,7 +153,7 @@ echo ""
 echo "💡 Quick Commands:"
 echo "   ./view-solutions.sh stats    # View knowledge base"
 echo "   git status                   # Check git status"
-echo "   ./map-codebase.sh            # Map your codebase"
+echo "   claude mcp list              # Check MCP servers"
 echo ""
 echo "📖 Documentation:"
 echo "   cat GETTING-STARTED.md       # Complete startup guide"
