@@ -145,6 +145,11 @@ QUICK-REFERENCE.txt          # Command cheat sheet
 ULTIMATE-AUTONOMOUS-SYSTEM.md    # Complete system guide
 KNOWLEDGE-BASE-COMPLETE.md   # KB system details
 GIT-SETUP-COMPLETE.md        # Git integration guide
+n8n-workflow/                # N8N workflow knowledge base
+├── N8N-WORKFLOW-KNOWLEDGE-BASE.md  # Critical lessons learned
+├── N8N-TECHNICAL-PATTERNS.md       # Reusable patterns
+├── N8N-QUICK-FIXES.md              # Quick fix cheat sheet
+└── YOUR-WORKFLOW-SPECIFICS.md      # Your workflow details
 ```
 
 ---
@@ -411,6 +416,41 @@ claude mcp add <name> [options] -- <command>
 - "Show me recent commits"
 - "Check CI/CD status for this branch"
 
+---
+
+## 🔄 N8N Workflow System
+
+Your system includes N8N workflow automation for nonprofit data processing:
+
+### Current Workflow Details:
+- **URL:** https://n8n.grantpilot.app
+- **Workflow ID:** pc1cMXkDsrWlOpKu
+- **Google Sheet:** 1bbwJfvO8kEFwXaQAAf9K_ZXMl3QWj3vzyvPxaQNUZk4
+- **Processing Rate:** ~600 nonprofits/hour
+
+### Common N8N Issues & Quick Fixes:
+
+**Stack Overflow with Large Sheets:**
+- Problem: UPDATE operation on 150K+ rows fails
+- Solution: Use APPEND to ProcessedResults sheet
+- Details: See `docs/n8n-workflow/N8N-QUICK-FIXES.md`
+
+**"Cannot read properties of undefined" Error:**
+- Problem: Dangling connections to deleted nodes
+- Solution: Validate and clean connections
+- Details: See `docs/n8n-workflow/N8N-TECHNICAL-PATTERNS.md`
+
+**"Could not get parameter" Error:**
+- Problem: Wrong column format in Google Sheets node
+- Solution: Use array format [{column, fieldValue}]
+- Details: See `docs/n8n-workflow/COLUMN-SCHEMA-FIXED.md`
+
+### N8N Workflow Documentation:
+- **[Knowledge Base](n8n-workflow/N8N-WORKFLOW-KNOWLEDGE-BASE.md)** - Critical lessons from debugging
+- **[Technical Patterns](n8n-workflow/N8N-TECHNICAL-PATTERNS.md)** - Reusable solutions
+- **[Quick Fixes](n8n-workflow/N8N-QUICK-FIXES.md)** - Cheat sheet for common issues
+- **[Your Workflow](n8n-workflow/YOUR-WORKFLOW-SPECIFICS.md)** - Your specific configuration
+
 ## ⚠️ What You DO Need to Start
 
 ▶️ **Only this:** `./start-everything.sh`
@@ -542,6 +582,10 @@ Everything else is automatic. Your autonomous system takes care of the rest.
 - `ULTIMATE-AUTONOMOUS-SYSTEM.md` - Full system capabilities
 - `KNOWLEDGE-BASE-COMPLETE.md` - KB system details
 - `GIT-SETUP-COMPLETE.md` - Git integration
+- `n8n-workflow/N8N-WORKFLOW-KNOWLEDGE-BASE.md` - N8N workflow lessons learned
+- `n8n-workflow/N8N-TECHNICAL-PATTERNS.md` - Reusable N8N patterns
+- `n8n-workflow/N8N-QUICK-FIXES.md` - Quick fixes for common N8N issues
+- `n8n-workflow/YOUR-WORKFLOW-SPECIFICS.md` - Your NFP workflow configuration
 
 ---
 
