@@ -9,9 +9,10 @@ This catalog documents production-ready Edge Functions that have proven successf
 ## Table of Contents
 
 1. [Nonprofit Data Processing](#nonprofit-data-processing)
-2. [Payment & Stripe Integration](#payment--stripe-integration)
-3. [Grants Management](#grants-management)
-4. [Future Opportunities](#future-opportunities)
+2. [Python Scripts & Utilities](#python-scripts--utilities)
+3. [Payment & Stripe Integration](#payment--stripe-integration)
+4. [Grants Management](#grants-management)
+5. [Future Opportunities](#future-opportunities)
 
 ---
 
@@ -272,9 +273,144 @@ curl -X POST "https://hjtvtkffpziopozmtsnb.supabase.co/functions/v1/extract-loca
 
 ---
 
+## Python Scripts & Utilities
+
+### 3. Nonprofit Public-Facing Classifier
+
+**Script:** `classify-parallel.py`
+**Status:** ✅ Production (Python Script)
+**Created:** 2025-11-08
+**Last Updated:** 2025-11-10
+**Successfully Processed:** 583,668 records
+
+#### Purpose
+Classifies nonprofit organizations as "public-facing" or "not public-facing" using an intelligent hybrid approach: 99% keyword-based classification (free), 1% LLM validation for uncertain cases (Claude Haiku).
+
+#### Success Metrics
+- **Total Records Classified:** 583,668 nonprofits
+- **Keyword Classification:** 99% (577,832 records)
+- **LLM Validation:** 1% (5,836 records)
+- **Total Cost:** $63.12
+- **Processing Time:** 2.7 hours with 10 parallel workers
+- **Cost per Record:** $0.000108
+- **Accuracy:** ~98%+ based on spot checks
+
+#### Key Features
+- **Dual-method classification:**
+  - Keyword matching with 90+ keywords and regex patterns
+  - Confidence scoring (0.0-1.0)
+  - LLM validation only for low-confidence cases (< 0.7)
+- **Parallel processing:** 10 workers with automatic chunk distribution
+- **Budget controls:** $30 per worker limit, automatic stop
+- **Retry logic:** 3 attempts for network errors with exponential backoff
+- **Progress tracking:** Real-time updates every 10 batches
+
+#### Classification Logic
+
+**PUBLIC-FACING Organizations:**
+- Schools, universities, daycare centers
+- Hospitals, clinics, nursing homes
+- Museums, libraries, theaters
+- Churches, temples, religious organizations
+- Food banks, shelters, community centers
+- Fire departments, emergency services
+- Parks, zoos, botanical gardens
+- Youth programs (Scouts, YMCA, Boys & Girls Clubs)
+
+**NOT PUBLIC-FACING Organizations:**
+- Employee benefit plans (VEBA, pensions, 401k trusts)
+- Union funds (training trusts, welfare funds)
+- Private foundations, donor-advised funds
+- Title-holding corporations
+- HOAs, condo associations
+- Investment/endowment funds
+
+#### How to Run
+
+**Single Worker (for testing):**
+```bash
+export ANTHROPIC_API_KEY='your-key'
+export SUPABASE_SERVICE_ROLE_KEY='your-key'
+
+python3 /tmp/classify-parallel.py 0 0 1000
+# worker_id=0, start_offset=0, chunk_size=1000
+```
+
+**Parallel Processing (10 workers):**
+```bash
+export ANTHROPIC_API_KEY='your-key'
+export SUPABASE_SERVICE_ROLE_KEY='your-key'
+
+for i in 0 1 2 3 4 5 6 7 8 9; do
+  python3 -u /tmp/classify-parallel.py $i $((i * 60000)) 60000 \
+    2>&1 | tee /tmp/classify-worker-$i.log &
+done
+
+echo "✅ Launched 10 parallel workers"
+```
+
+**Monitor Progress:**
+```bash
+# Watch all workers
+tail -f /tmp/classify-worker-*.log
+
+# Check specific worker
+tail -f /tmp/classify-worker-0.log
+```
+
+#### Code Location
+**Main Script:** `/tmp/classify-parallel.py`
+**Keyword Classifier:** `/tmp/classify_nonprofits_enhanced.py`
+
+#### When to Reuse
+**Perfect for:**
+- Monthly batch classification of newly imported nonprofits
+- Re-classification after importing new datasets
+- One-time bulk classification jobs
+- Any scenario requiring cost-effective nonprofit categorization
+
+**Example Monthly Schedule:**
+```bash
+# Classify new nonprofits added in past 30 days
+# Run as cron job: 0 2 1 * * (2am on 1st of each month)
+python3 classify-new-nonprofits.py
+```
+
+#### Dependencies
+```bash
+pip3 install anthropic supabase
+```
+
+#### Environment Variables
+```bash
+ANTHROPIC_API_KEY=sk-ant-your-key
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your-key
+```
+
+#### Output Example
+```
+[Worker 0] 🚀 Starting parallel classification worker
+[Worker 0] Range: 0 to 60000
+[Worker 0] Budget: $30
+[Worker 0] Progress: 50.0% | Processed: 30,000 | Cost: $3.24
+[Worker 0] ✅ COMPLETE
+[Worker 0] Processed: 58,367
+[Worker 0] Keywords: 57,832
+[Worker 0] LLM: 535
+[Worker 0] Cost: $5.89
+[Worker 0] DB updates: 58,367
+```
+
+#### Conversion to Edge Function
+**Status:** Recommended for automation
+**See:** [Future Opportunities](#future-opportunities) section below
+
+---
+
 ## Payment & Stripe Integration
 
-### 3. Stripe Checkout Session Creator
+### 4. Stripe Checkout Session Creator
 
 **Function:** `create-checkout-session`
 **Created:** 2025-01-24
@@ -291,7 +427,7 @@ Creates Stripe checkout sessions for subscription payments with proper metadata 
 
 ---
 
-### 4. Stripe Webhook Handler
+### 5. Stripe Webhook Handler
 
 **Function:** `stripe-webhook`
 **Created:** 2025-01-26
@@ -310,7 +446,7 @@ Handles Stripe webhook events for payment confirmations, subscription updates, a
 
 ## Grants Management
 
-### 5. Grants.gov Data Extractor
+### 6. Grants.gov Data Extractor
 
 **Function:** `grants-gov-api-extractor`
 **Created:** 2025-01-31
