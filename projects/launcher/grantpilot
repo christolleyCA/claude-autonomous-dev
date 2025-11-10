@@ -1,0 +1,26 @@
+#!/bin/bash
+export CLAUDE_PROJECT="grantpilot"
+export CLAUDE_WORKING_DIR="$HOME/autonomous-dev"
+export CLAUDE_SHARED="$HOME/claude-shared"
+
+cd "$CLAUDE_WORKING_DIR"
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "🚀 Starting GrantPilot Project"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "📁 Working Directory: $CLAUDE_WORKING_DIR"
+echo "🔧 Shared Resources:  $CLAUDE_SHARED"
+echo "🤖 Knowledge Base:    $CLAUDE_SHARED/knowledge-base"
+echo "⚡ Autonomous Tools:  $CLAUDE_SHARED/autonomous-tools"
+echo "🔌 MCPs: Supabase, Sentry, N8N, Docs"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+
+# Run startup script if available
+if [ -f "$CLAUDE_WORKING_DIR/bin/startup/start-everything.sh" ]; then
+  echo "🔄 Running startup checks..."
+  "$CLAUDE_WORKING_DIR/bin/startup/start-everything.sh"
+  echo ""
+fi
+
+claude
