@@ -1,6 +1,6 @@
 # Supabase Edge Functions - Production Catalog
 
-*Last Updated: 2025-11-09*
+*Last Updated: 2025-11-10*
 
 This catalog documents production-ready Edge Functions that have proven successful and are recommended for reuse. Only battle-tested functions are included here.
 
@@ -20,9 +20,10 @@ This catalog documents production-ready Edge Functions that have proven successf
 ### 1. Website Finder - Tavily API
 
 **Function:** `process-nonprofits-tavily`
+**Version:** 6
 **Created:** 2025-11-08
 **Status:** ✅ Production
-**Last Updated:** 2025-11-09
+**Last Updated:** 2025-11-10
 
 #### Purpose
 Automatically discovers and validates websites for nonprofit organizations using the Tavily Search API. Designed for parallel processing with row-level database locking.
@@ -123,7 +124,7 @@ echo "Monitor: tail -f /tmp/tavily-processor-*.log"
 ```sql
 CREATE OR REPLACE FUNCTION get_pending_nonprofits(batch_size INTEGER DEFAULT 10)
 RETURNS TABLE (
-  id UUID,
+  id UUID,                    -- ⚠️ MUST match table column type (UUID not BIGINT)
   ein_charity_number TEXT,
   name TEXT,
   city TEXT,
@@ -138,11 +139,11 @@ BEGIN
   WHERE n.id IN (
     SELECT np.id
     FROM nonprofits np
-    WHERE np.status = 'PENDING'
+    WHERE (np.status IS NULL OR np.status = 'PENDING')  -- Handle both NULL and PENDING
       AND np.public_facing = true
-      AND np.website IS NULL
+      AND (np.website IS NULL OR np.website = '')
     LIMIT batch_size
-    FOR UPDATE SKIP LOCKED
+    FOR UPDATE SKIP LOCKED  -- Critical for parallel processing
   )
   RETURNING
     n.id,
@@ -164,6 +165,52 @@ TAVILY_API_KEY=tvly-your-api-key
 
 #### Code Location
 **Edge Function:** `/supabase/functions/process-nonprofits-tavily/index.ts`
+
+#### Troubleshooting
+
+**Common Issue: "structure of query does not match function result type"**
+
+**Symptom:** Edge function returns 500 errors, logs show:
+```
+Database fetch failed: structure of query does not match function result type
+```
+
+**Root Cause:** The RPC function `get_pending_nonprofits` has a type mismatch. This typically happens when:
+- The function declares `id BIGINT` but the table has `id UUID`
+- The function returns a column that doesn't exist or has wrong type
+
+**Fix Applied (2025-11-10):**
+```sql
+-- Drop the old function (REQUIRED before recreating)
+DROP FUNCTION IF EXISTS get_pending_nonprofits(integer);
+
+-- Recreate with correct UUID type (not BIGINT)
+CREATE OR REPLACE FUNCTION get_pending_nonprofits(batch_size INT)
+RETURNS TABLE (
+  id UUID,  -- CRITICAL: Must match nonprofits.id type
+  ein_charity_number TEXT,
+  name TEXT,
+  city TEXT,
+  state_province TEXT,
+  public_facing BOOLEAN
+)
+-- ... rest of function
+```
+
+**Verification:**
+After fixing, test with a small batch:
+```bash
+curl -X POST "$URL" -d '{"processorId": 1, "batchSize": 5}'
+# Should return: "recordsProcessed": 5
+```
+
+**Prevention:**
+Always verify table column types before creating RPC functions:
+```sql
+SELECT column_name, data_type
+FROM information_schema.columns
+WHERE table_name = 'nonprofits';
+```
 
 ---
 
