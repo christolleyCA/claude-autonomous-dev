@@ -75,6 +75,50 @@ for i in {1..15}; do
 done
 ```
 
+#### Automated Parallel Processing Script
+For processing all records with optimal parallelism:
+
+**Script:** `process-all-tavily-parallel.sh`
+**Location:** `/tmp/process-all-tavily-parallel.sh` (move to `~/claude-shared/autonomous-tools/`)
+
+```bash
+#!/bin/bash
+# Process all public-facing nonprofits using 15 parallel processors
+# Auto-stops when no more records available
+
+API_URL="https://hjtvtkffpziopozmtsnb.supabase.co/functions/v1/process-nonprofits-tavily"
+AUTH_KEY="YOUR_SERVICE_ROLE_KEY"
+
+for i in {1..15}; do
+  (
+    batch=1
+    while true; do
+      response=$(curl -sX POST "$API_URL" \
+        -H "Authorization: Bearer $AUTH_KEY" \
+        -H "Content-Type: application/json" \
+        -d "{\"processorId\": $i, \"batchSize\": 100}")
+
+      if echo "$response" | grep -q '"recordsProcessed":0'; then
+        echo "[Processor $i] Finished after $batch batches"
+        break
+      fi
+
+      batch=$((batch + 1))
+      sleep 2
+    done
+  ) > "/tmp/tavily-processor-$i.log" 2>&1 &
+  sleep 2
+done
+
+echo "✅ All 15 processors started!"
+echo "Monitor: tail -f /tmp/tavily-processor-*.log"
+```
+
+**When to Use:**
+- Monthly processing of newly classified nonprofits
+- After bulk imports when many records need websites
+- Automated overnight processing (set as cron job)
+
 #### Required Database Function
 ```sql
 CREATE OR REPLACE FUNCTION get_pending_nonprofits(batch_size INTEGER DEFAULT 10)
