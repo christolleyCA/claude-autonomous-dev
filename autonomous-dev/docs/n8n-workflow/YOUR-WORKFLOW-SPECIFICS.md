@@ -9,7 +9,7 @@
 
 ## Your Credentials (Reference Only)
 ```bash
-N8N_API_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MjczNjA3Yy0wOWEwLTRiNGItYmRkZC00YTM1NTRhNTk1ZCIsImlzcyI6Im44biIsImF1ZCI6InB1YmxpYy1hcGkiLCJpYXQiOjE3NjIwMjg0MzYfQ.Ag8ZwDU58RENpFpK3ntGN_Sz7a06-AeYezqiFweueys"
+N8N_API_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MjczNjA3Yy0wOWEwLTRiNGItYmRkZC00YTM1NTRhNTc5NWQiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzYyMDI4NDM2fQ.Ag8ZwDU58RENpFpK3ntGN_Sz7a06-AeYezqiFweueys"
 SENTRY_DSN="https://e3e72e5d3cddc31e15a6f56a384d081e@o4510218110894080.ingest.us.sentry.io/4510291768442880"
 ```
 
@@ -54,7 +54,7 @@ Google Sheets v4.5 needs array format, not object
 ### Deploy Your Workflow
 ```bash
 curl -sX PUT "https://n8n.grantpilot.app/api/v1/workflows/pc1cMXkDsrWlOpKu" \
-  -H "X-N8N-API-KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MjczNjA3Yy0wOWEwLTRiNGItYmRkZC00YTM1NTRhNTk1ZCIsImlzcyI6Im44biIsImF1ZCI6InB1YmxpYy1hcGkiLCJpYXQiOjE3NjIwMjg0MzYfQ.Ag8ZwDU58RENpFpK3ntGN_Sz7a06-AeYezqiFweueys" \
+  -H "X-N8N-API-KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MjczNjA3Yy0wOWEwLTRiNGItYmRkZC00YTM1NTRhNTc5NWQiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzYyMDI4NDM2fQ.Ag8ZwDU58RENpFpK3ntGN_Sz7a06-AeYezqiFweueys" \
   -H "Content-Type: application/json" \
   --data-binary @workflow.json
 ```
