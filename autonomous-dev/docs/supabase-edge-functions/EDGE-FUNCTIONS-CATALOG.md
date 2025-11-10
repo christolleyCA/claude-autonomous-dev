@@ -463,50 +463,108 @@ Extracts grant opportunity data from Grants.gov API and stores in database.
 
 ---
 
-## Future Opportunities
+## Nonprofit Data Processing (Edge Functions)
 
-### Nonprofit Classification Edge Function (RECOMMENDED)
+### 7. Nonprofit Public-Facing Classifier (Edge Function)
 
-**Status:** 🔨 Not Yet Built (Currently Python Script)
-**Priority:** HIGH
-**Estimated Effort:** 2-3 hours
+**Function:** `classify-nonprofits`
+**Version:** 1
+**Created:** 2025-11-10
+**Status:** ✅ Production
+**Last Updated:** 2025-11-10
 
-#### Why Build This
-The current classification system (public-facing vs not public-facing) is a Python script that processes 583K records with:
-- 99% keyword-based classification (free)
-- 1% LLM validation (Claude Haiku)
-- $63 total cost for full dataset
-- 2.7 hours with 10 parallel workers
+#### Purpose
+Edge Function version of the nonprofit classifier. Automatically classifies nonprofits as "public-facing" or "not public-facing" using hybrid approach: 99% keyword-based (free), 1% LLM validation (Claude Haiku).
 
-**This should be an Edge Function for:**
-1. **Monthly automation** - Classify new nonprofits added to database
-2. **On-demand classification** - Trigger from UI when user adds records
-3. **Scheduled cron jobs** - Run automatically without manual intervention
-4. **Better logging** - Centralized logs in Supabase dashboard
+#### Success Metrics (from Python version)
+- **Cost per Record:** $0.000108
+- **Keyword Classification:** 99%
+- **LLM Validation:** 1%
+- **Accuracy:** ~98%+
 
-#### Proposed Architecture
-```typescript
-// Edge Function: classify-nonprofits
-// Input: { batchSize: 100, useKeywordsOnly: false }
-//
-// 1. Fetch NULL public_facing records (FOR UPDATE SKIP LOCKED)
-// 2. Run enhanced keyword classifier (90+ keywords)
-// 3. For uncertain cases (confidence < 0.7), call Claude Haiku
-// 4. Update database with classification + confidence + method
-// 5. Track cost and statistics
+#### Key Features
+- **Automated invocation:** Can be triggered via webhook, cron, or API
+- **Same logic as Python version:** Uses identical keyword/LLM hybrid approach
+- **Centralized logs:** All logs in Supabase dashboard
+- **Configurable batch size:** Process 10-1000 records per invocation
+- **Confidence threshold:** Configurable (default 0.7)
+
+#### When to Use Edge Function vs Python Script
+**Use Edge Function for:**
+- Monthly automated classification of new records
+- On-demand classification from UI
+- Scheduled cron jobs (1st of each month)
+- Small to medium batches (< 10K records)
+
+**Use Python Script for:**
+- Initial bulk classification (500K+ records)
+- Maximum parallel processing (10 workers)
+- Cost-sensitive large batches
+
+#### How to Invoke
+
+**Single Batch:**
+```bash
+curl -X POST "https://hjtvtkffpziopozmtsnb.supabase.co/functions/v1/classify-nonprofits" \
+  -H "Authorization: Bearer YOUR_SERVICE_ROLE_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"batchSize": 100}'
 ```
 
-#### Estimated Cost
-- Per record: $0.00011 (only for LLM-validated cases)
-- Monthly (assuming 1,000 new records): ~$0.11
-- Yearly: ~$1.32
+**Expected Response:**
+```json
+{
+  "success": true,
+  "recordsProcessed": 100,
+  "keywordClassified": 99,
+  "llmValidated": 1,
+  "databaseUpdates": 100,
+  "durationMs": 2500,
+  "estimatedCost": 0.000108
+}
+```
 
-#### Code to Adapt
-**Source:** `/tmp/classify_nonprofits_enhanced.py` (keyword classifier)
-**Source:** `/tmp/classify-parallel.py` (parallel processing logic)
+**Scheduled Cron Job (monthly):**
+```javascript
+// Supabase Dashboard → Database → Cron Jobs
+// Schedule: 0 2 1 * * (2am on 1st of each month)
+SELECT net.http_post(
+  url := 'https://hjtvtkffpziopozmtsnb.supabase.co/functions/v1/classify-nonprofits',
+  headers := '{"Authorization": "Bearer YOUR_KEY", "Content-Type": "application/json"}'::jsonb,
+  body := '{"batchSize": 1000}'::jsonb
+);
+```
 
-#### When to Build
-**Trigger:** When you want to automate classification monthly or need on-demand classification from the UI.
+#### Environment Variables Required
+```
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your-key
+ANTHROPIC_API_KEY=sk-ant-your-key  # Optional, for LLM validation
+```
+
+#### Code Location
+**Edge Function:** Deployed to Supabase (v1)
+**Source:** `/tmp/classify-nonprofits-edge/index.ts`
+
+#### Advantages Over Python Script
+1. **No infrastructure needed:** Runs on Supabase, no server required
+2. **Automated scheduling:** Built-in cron support
+3. **Centralized logging:** All logs in Supabase dashboard
+4. **API accessible:** Can be called from anywhere
+5. **Zero maintenance:** Supabase handles scaling and updates
+
+---
+
+## Future Opportunities
+
+### Additional Automation Ideas
+
+**Note:** The nonprofit classifier Edge Function (originally recommended here) has now been built and deployed! See section 7 above.
+
+#### Other Potential Automations
+- **Grant matching engine:** Edge Function to match nonprofits with relevant grants
+- **Website health checker:** Periodic verification that nonprofit websites are still active
+- **Data freshness monitoring:** Alert when key nonprofit data becomes outdated
 
 ---
 
