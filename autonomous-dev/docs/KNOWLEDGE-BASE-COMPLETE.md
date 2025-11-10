@@ -147,7 +147,7 @@ find_similar_features "email"
 
 ## Current Knowledge Base
 
-**Total Solutions:** 5
+**Total Solutions:** 6
 
 ### Solutions Seeded:
 
@@ -170,6 +170,21 @@ find_similar_features "email"
 5. **Automatic version control for built features**
    - Tags: git, automation, version-control, ci-cd
    - Solution: Integrate git commit into build-feature.sh workflow
+
+6. **Parallel website discovery for 72K+ nonprofits** (Added 2025-11-10)
+   - Tags: supabase, tavily, parallel-processing, edge-functions, nonprofit-data
+   - Problem: Need to discover websites for 72,826 public-facing nonprofits efficiently and cost-effectively
+   - Solution: Deploy 15 parallel processors using Supabase Edge Function with Tavily Search API
+   - Key Insights:
+     - Used `FOR UPDATE SKIP LOCKED` for concurrent processing without conflicts
+     - Batch size of 100 records optimal for throughput vs latency
+     - 15 parallel workers ideal for Tavily API rate limits
+     - Cost: $546.20 total ($0.0075 per search)
+     - Success rate: 99.94% (72,780 websites found from 72,826 records)
+     - Processing time: ~2 hours
+   - Monitoring: Created comprehensive SQL queries for real-time progress tracking
+   - Result: Reduced public-facing nonprofits without websites from 81,498 to 345 (99.6% coverage!)
+   - Reusable for: Monthly batches of new nonprofits, any entity-based website discovery
 
 ---
 

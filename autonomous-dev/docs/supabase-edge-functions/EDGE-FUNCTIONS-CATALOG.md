@@ -30,12 +30,25 @@ This catalog documents production-ready Edge Functions that have proven successf
 Automatically discovers and validates websites for nonprofit organizations using the Tavily Search API. Designed for parallel processing with row-level database locking.
 
 #### Success Metrics
-- **Records Processed:** 126,759 nonprofits
-- **Success Rate:** 99.77%
-- **Websites Found:** 126,467
-- **Failed:** 292 (0.23%)
-- **Cost:** ~$261 total ($0.0075 per search)
-- **Processing Time:** ~3 hours with 15 parallel workers
+- **Session 1 (2025-11-08):**
+  - Records Processed: 126,759 nonprofits
+  - Success Rate: 99.77%
+  - Websites Found: 126,467
+  - Cost: ~$950.69 ($0.0075 per search)
+  - Processing Time: ~3 hours with 15 parallel workers
+
+- **Session 2 (2025-11-10):**
+  - Records Processed: 72,826 nonprofits
+  - Success Rate: 99.94%
+  - Websites Found: 72,780
+  - Cost: ~$546.20 ($0.0075 per search)
+  - Processing Time: ~2 hours with 15 parallel workers
+
+- **Total Cumulative:**
+  - Records Processed: 199,585 nonprofits
+  - Websites Found: 199,247
+  - Total Cost: ~$1,496.89
+  - Average Success Rate: 99.83%
 
 #### Key Features
 - PostgreSQL `FOR UPDATE SKIP LOCKED` for parallel processing
